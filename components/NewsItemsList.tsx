@@ -3,6 +3,7 @@ import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
+import { Platform } from "react-native";
 
 import { HackerNewsStory } from "../screens/HackerNewsScreen";
 import useComponentLayout from "../hooks/useComponentLayout";
@@ -44,8 +45,8 @@ export const NewsItemsList = ({ stories }: NewsItemsListProps) => {
         contentContainerStyle={{
           margin: 24,
           paddingBottom: 50,
+          alignItems: Platform.select({ web: "center" }),
         }}
-        style={{ backgroundColor: "#fff" }}
       >
         {stories
           ? stories.map((story) => (

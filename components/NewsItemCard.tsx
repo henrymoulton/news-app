@@ -1,17 +1,19 @@
 import url from "url";
 
+import React from "react";
+import { H2, P, View } from "dripsy";
 import {
   Linking,
-  StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
+  ViewStyle,
+  StyleProp,
+  Platform,
 } from "react-native";
-import React from "react";
 import { Feather } from "@expo/vector-icons";
 import TouchableScale from "@jonny/touchable-scale";
 
 import ParallaxView from "./ParallaxView";
+import ParallaxViewWeb from "./ParallaxViewWeb";
 
 const nodeUrl = url;
 
@@ -39,8 +41,31 @@ export const NewsItemCard = ({
   numComments,
 }: NewsItemCardProps) => {
   // const navigation = useNavigation();
+
+  const containerStyle: StyleProp<ViewStyle> = {
+    backgroundColor: "#fff",
+    padding: 24,
+    margin: 16,
+    borderRadius: 4,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 14,
+  };
+
+  const PlatformContainerView =
+    Platform.OS === "web" ? ParallaxViewWeb : ParallaxView;
+
   return (
-    <ParallaxView>
+    <PlatformContainerView
+      style={{
+        width: Platform.select({ ios: "100%", web: "40%" }),
+      }}
+    >
       <TouchableScale
         onPress={async () => {
           // navigation.navigate("StoryScreen", {
@@ -49,10 +74,10 @@ export const NewsItemCard = ({
           // });
         }}
         key={`key-${heading}-${url}`}
-        style={styles.container}
+        style={containerStyle}
       >
-        <Text style={styles.headerText}>{heading}</Text>
-        {url && <Text style={styles.smallText}>{urlShortener(url)}</Text>}
+        <H2>{heading}</H2>
+        {url && <P>{urlShortener(url)}</P>}
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View
             style={{
@@ -61,14 +86,13 @@ export const NewsItemCard = ({
               alignItems: "center",
             }}
           >
-            <Text style={styles.smallText}>{points}</Text>
+            <P>{points}</P>
             <View
               style={{
-                paddingBottom: 4,
                 marginLeft: 4,
               }}
             >
-              <Feather name={"arrow-up"} size={20} />
+              <Feather name={"arrow-up"} size={15} />
             </View>
           </View>
           <TouchableOpacity
@@ -81,45 +105,17 @@ export const NewsItemCard = ({
               alignItems: "center",
             }}
           >
-            <Text style={styles.smallText}>{numComments}</Text>
+            <P>{numComments}</P>
             <View
               style={{
-                paddingBottom: 4,
                 marginLeft: 4,
               }}
             >
-              <Feather name={"message-circle"} size={20} />
+              <Feather name={"message-circle"} size={15} />
             </View>
           </TouchableOpacity>
         </View>
       </TouchableScale>
-    </ParallaxView>
+    </PlatformContainerView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#fff",
-    padding: 24,
-    margin: 16,
-    borderRadius: 4,
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 14,
-  },
-  smallText: {
-    fontSize: 16,
-    marginBottom: 6,
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: "600",
-    marginBottom: 8,
-  },
-});
